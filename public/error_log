@@ -1,0 +1,80 @@
+[24-Jul-2024 13:54:39 UTC] PHP Fatal error:  Uncaught ReflectionException: Class "App\Exceptions\Handler" does not exist in /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Container/Container.php:912
+Stack trace:
+#0 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Container/Container.php(912): ReflectionClass->__construct()
+#1 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Container/Container.php(795): Illuminate\Container\Container->build()
+#2 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(961): Illuminate\Container\Container->resolve()
+#3 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Container/Container.php(297): Illuminate\Foundation\Application->resolve()
+#4 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Container/Container.php(908): Illuminate\Container\Container->Illuminate\Container\{closure}()
+#5 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Container/Container.php(795): Illuminate\Container\Container->build()
+#6 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(961): Illuminate\Container\Container->resolve()
+#7 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Container/Container.php(731): Illuminate\Foundation\Application->resolve()
+#8 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(946): Illuminate\Container\Container->make()
+#9 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(288): Illuminate\Foundation\Application->make()
+#10 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(218): Illuminate\Foundation\Bootstrap\HandleExceptions->getExceptionHandler()
+#11 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(195): Illuminate\Foundation\Bootstrap\HandleExceptions->renderHttpResponse()
+#12 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleException()
+#13 [internal function]: Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#14 {main}
+
+Next Illuminate\Contracts\Container\BindingResolutionException: Target class [App\Exceptions\Handler] does not exist. in /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Container/Container.php:914
+Stack trace:
+#0 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Container/Container.php(795): Illuminate\Container\Container->build()
+#1 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(961): Illuminate\Container\Container->resolve()
+#2 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Container/Container.php(297): Illuminate\Foundation\Application->resolve()
+#3 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Container/Container.php(908): Illuminate\Container\Container->Illuminate\Container\{closure}()
+#4 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Container/Container.php(795): Illuminate\Container\Container->build()
+#5 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(961): Illuminate\Container\Container->resolve()
+#6 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Container/Container.php(731): Illuminate\Foundation\Application->resolve()
+#7 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(946): Illuminate\Container\Container->make()
+#8 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(288): Illuminate\Foundation\Application->make()
+#9 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(218): Illuminate\Foundation\Bootstrap\HandleExceptions->getExceptionHandler()
+#10 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(195): Illuminate\Foundation\Bootstrap\HandleExceptions->renderHttpResponse()
+#11 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleException()
+#12 [internal function]: Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#13 {main}
+  thrown in /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Container/Container.php on line 914
+[24-Jul-2024 13:55:43 UTC] PHP Fatal error:  Declaration of App\Exceptions\Handler::render($request, Exception $exception) must be compatible with Illuminate\Foundation\Exceptions\Handler::render($request, Throwable $e) in /home/quickdig/raalc.quickdigitals.ae/app/Exceptions/Handler.php on line 38
+[24-Jul-2024 13:55:54 UTC] PHP Fatal error:  Declaration of App\Exceptions\Handler::render($request, Exception $exception) must be compatible with Illuminate\Foundation\Exceptions\Handler::render($request, Throwable $e) in /home/quickdig/raalc.quickdigitals.ae/app/Exceptions/Handler.php on line 38
+[24-Jul-2024 13:56:24 UTC] PHP Fatal error:  Declaration of App\Exceptions\Handler::render($request, Exception $exception) must be compatible with Illuminate\Foundation\Exceptions\Handler::render($request, Throwable $e) in /home/quickdig/raalc.quickdigitals.ae/app/Exceptions/Handler.php on line 38
+[24-Jul-2024 14:00:07 UTC] PHP Fatal error:  Declaration of App\Exceptions\Handler::render($request, Exception $exception) must be compatible with Illuminate\Foundation\Exceptions\Handler::render($request, Throwable $e) in /home/quickdig/raalc.quickdigitals.ae/app/Exceptions/Handler.php on line 38
+[24-Jul-2024 14:01:00 UTC] PHP Fatal error:  Could not check compatibility between App\Exceptions\Handler::render($request, App\Exceptions\Exception $exception) and Illuminate\Foundation\Exceptions\Handler::render($request, Throwable $e), because class App\Exceptions\Exception is not available in /home/quickdig/raalc.quickdigitals.ae/app/Exceptions/Handler.php on line 36
+[24-Jul-2024 14:07:58 UTC] PHP Fatal error:  Declaration of App\Exceptions\Handler::render($request, Exception $exception) must be compatible with Illuminate\Foundation\Exceptions\Handler::render($request, Throwable $e) in /home/quickdig/raalc.quickdigitals.ae/app/Exceptions/Handler.php on line 26
+[24-Jul-2024 14:09:00 UTC] PHP Fatal error:  Declaration of App\Exceptions\Handler::render($request, Exception $exception) must be compatible with Illuminate\Foundation\Exceptions\Handler::render($request, Throwable $e) in /home/quickdig/raalc.quickdigitals.ae/app/Exceptions/Handler.php on line 34
+[25-Jul-2024 08:05:15 UTC] PHP Fatal error:  Declaration of App\Exceptions\Handler::render($request, Exception $exception) must be compatible with Illuminate\Foundation\Exceptions\Handler::render($request, Throwable $e) in /home/quickdig/raalc.quickdigitals.ae/app/Exceptions/Handler.php on line 21
+[25-Jul-2024 08:05:25 UTC] PHP Fatal error:  Declaration of App\Exceptions\Handler::render($request, Exception $exception) must be compatible with Illuminate\Foundation\Exceptions\Handler::render($request, Throwable $e) in /home/quickdig/raalc.quickdigitals.ae/app/Exceptions/Handler.php on line 21
+[25-Jul-2024 08:05:29 UTC] PHP Fatal error:  Declaration of App\Exceptions\Handler::render($request, Exception $exception) must be compatible with Illuminate\Foundation\Exceptions\Handler::render($request, Throwable $e) in /home/quickdig/raalc.quickdigitals.ae/app/Exceptions/Handler.php on line 21
+[26-Jul-2024 05:27:28 UTC] PHP Fatal error:  Uncaught TypeError: App\Exceptions\Handler::getStatusCode(): Return value must be of type int, string returned in /home/quickdig/raalc.quickdigitals.ae/app/Exceptions/Handler.php:59
+Stack trace:
+#0 /home/quickdig/raalc.quickdigitals.ae/app/Exceptions/Handler.php(33): App\Exceptions\Handler->getStatusCode()
+#1 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(642): App\Exceptions\Handler->convertExceptionToResponse()
+#2 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(556): Illuminate\Foundation\Exceptions\Handler->prepareResponse()
+#3 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(473): Illuminate\Foundation\Exceptions\Handler->renderExceptionResponse()
+#4 /home/quickdig/raalc.quickdigitals.ae/app/Exceptions/Handler.php(28): Illuminate\Foundation\Exceptions\Handler->render()
+#5 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(218): App\Exceptions\Handler->render()
+#6 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(195): Illuminate\Foundation\Bootstrap\HandleExceptions->renderHttpResponse()
+#7 /home/quickdig/raalc.quickdigitals.ae/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\Foundation\Bootstrap\HandleExceptions->handleException()
+#8 [internal function]: Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#9 {main}
+  thrown in /home/quickdig/raalc.quickdigitals.ae/app/Exceptions/Handler.php on line 59
+[01-Aug-2024 10:39:10 Asia/Dubai] PHP Fatal error:  Cannot declare class App\Http\Controllers\NewsEventController, because the name is already in use in /home/quickdig/raalc.quickdigitals.ae/app/Http/Controllers/Apis/NewsEventController.php on line 0
+[01-Aug-2024 11:42:40 Asia/Dubai] PHP Fatal error:  Cannot use isset() on the result of an expression (you can use "null !== expression" instead) in /home/quickdig/raalc.quickdigitals.ae/app/Http/Controllers/Apis/WebContentController.php on line 93
+[02-Aug-2024 12:16:08 Asia/Dubai] PHP Fatal error:  Cannot use [] for reading in /home/quickdig/raalc.quickdigitals.ae/app/Http/Controllers/Apis/WebContentController.php on line 103
+[02-Aug-2024 12:16:08 Asia/Dubai] PHP Fatal error:  Cannot use [] for reading in /home/quickdig/raalc.quickdigitals.ae/app/Http/Controllers/Apis/WebContentController.php on line 103
+[02-Aug-2024 12:16:25 Asia/Dubai] PHP Fatal error:  Cannot use [] for reading in /home/quickdig/raalc.quickdigitals.ae/app/Http/Controllers/Apis/WebContentController.php on line 103
+[02-Aug-2024 12:16:25 Asia/Dubai] PHP Fatal error:  Cannot use [] for reading in /home/quickdig/raalc.quickdigitals.ae/app/Http/Controllers/Apis/WebContentController.php on line 103
+[02-Aug-2024 12:16:28 Asia/Dubai] PHP Fatal error:  Cannot use [] for reading in /home/quickdig/raalc.quickdigitals.ae/app/Http/Controllers/Apis/WebContentController.php on line 103
+[02-Aug-2024 12:16:28 Asia/Dubai] PHP Fatal error:  Cannot use [] for reading in /home/quickdig/raalc.quickdigitals.ae/app/Http/Controllers/Apis/WebContentController.php on line 103
+[02-Aug-2024 12:16:29 Asia/Dubai] PHP Fatal error:  Cannot use [] for reading in /home/quickdig/raalc.quickdigitals.ae/app/Http/Controllers/Apis/WebContentController.php on line 103
+[02-Aug-2024 12:16:30 Asia/Dubai] PHP Fatal error:  Cannot use [] for reading in /home/quickdig/raalc.quickdigitals.ae/app/Http/Controllers/Apis/WebContentController.php on line 103
+[16-Aug-2024 10:33:42 Asia/Dubai] PHP Deprecated:  Optional parameter $per_page declared before required parameter $request is implicitly treated as a required parameter in /home/quickdig/raalc.quickdigitals.ae/app/Http/Controllers/Apis/ServicesController.php on line 63
+[16-Aug-2024 10:46:15 Asia/Dubai] PHP Deprecated:  Optional parameter $per_page declared before required parameter $request is implicitly treated as a required parameter in /home/quickdig/raalc.quickdigitals.ae/app/Http/Controllers/Apis/ServicesController.php on line 63
+[16-Aug-2024 10:47:45 Asia/Dubai] PHP Deprecated:  Optional parameter $per_page declared before required parameter $request is implicitly treated as a required parameter in /home/quickdig/raalc.quickdigitals.ae/app/Http/Controllers/Apis/ServicesController.php on line 63
+[16-Aug-2024 10:48:49 Asia/Dubai] PHP Deprecated:  Optional parameter $per_page declared before required parameter $request is implicitly treated as a required parameter in /home/quickdig/raalc.quickdigitals.ae/app/Http/Controllers/Apis/ServicesController.php on line 63
+[16-Aug-2024 10:57:55 Asia/Dubai] PHP Deprecated:  Optional parameter $per_page declared before required parameter $request is implicitly treated as a required parameter in /home/quickdig/raalc.quickdigitals.ae/app/Http/Controllers/Apis/BookingController.php on line 180
+[19-Aug-2024 11:42:10 Asia/Dubai] PHP Deprecated:  Optional parameter $client_id declared before required parameter $request is implicitly treated as a required parameter in /home/quickdig/raalc.quickdigitals.ae/app/Http/Controllers/Apis/BookingController.php on line 180
+[24-Sep-2024 11:04:58 Asia/Dubai] PHP Fatal error:  Cannot use empty array elements in arrays in /home/quickdig/raalc.quickdigitals.ae/app/Http/Controllers/Apis/NotificationController.php on line 116
+[24-Sep-2024 11:05:54 Asia/Dubai] PHP Fatal error:  Cannot use empty array elements in arrays in /home/quickdig/raalc.quickdigitals.ae/app/Http/Controllers/Apis/NotificationController.php on line 117
+[24-Sep-2024 11:06:23 Asia/Dubai] PHP Fatal error:  Cannot use empty array elements in arrays in /home/quickdig/raalc.quickdigitals.ae/app/Http/Controllers/Apis/NotificationController.php on line 117
+[24-Sep-2024 11:07:46 Asia/Dubai] PHP Fatal error:  Cannot use empty array elements in arrays in /home/quickdig/raalc.quickdigitals.ae/app/Http/Controllers/Apis/NotificationController.php on line 116
+[24-Sep-2024 11:57:53 Asia/Dubai] PHP Fatal error:  Cannot use [] for reading in /home/quickdig/raalc.quickdigitals.ae/app/Http/Controllers/Apis/BookingController.php on line 336
+[24-Sep-2024 11:59:52 Asia/Dubai] PHP Fatal error:  Cannot use [] for reading in /home/quickdig/raalc.quickdigitals.ae/app/Http/Controllers/Apis/BookingController.php on line 319

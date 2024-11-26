@@ -1,0 +1,1 @@
+[22-Jul-2024 07:58:18 UTC] PHP Fatal error:  Trait "App\Models\HasRoles" not found in /home/quickdig/raalc.quickdigitals.ae/app/Models/User.php on line 11
