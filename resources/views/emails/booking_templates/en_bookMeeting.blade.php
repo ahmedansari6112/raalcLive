@@ -32,14 +32,8 @@
     @if($isAdmin)
         <!-- Admin Email Content -->
         <div class="email-section">
-            <h1>{{ $bookingDetail['change_status'] ? 'Booking Status Updated' : 'Booking Details' }}</h1>
+            <h1>{{ $bookingDetail['change_status'] ? 'Legal Consultation Request Status Updated' : 'Legal Consultation Request Details' }}</h1>
             <table>
-                <thead>
-                    <tr>
-                        <th>Field</th>
-                        <th>Details</th>
-                    </tr>
-                </thead>
                 <tbody>
                     <tr>
                         <td>Client Name</td>
@@ -66,11 +60,11 @@
                     </tr>
                     @endif
                     <tr>
-                        <td>Meeting Date</td>
+                        <td>Preferred Date</td>
                         <td>{{ $bookingDetail['meeting_date'] }}</td>
                     </tr>
                     <tr>
-                        <td>Time Slot</td>
+                        <td>Preferred Time Slot</td>
                         <td>{{ $bookingDetail['time_slot'] }}</td>
                     </tr>
                     <tr>
@@ -78,7 +72,7 @@
                         <td>{{ $bookingDetail['number_of_attendees'] }}</td>
                     </tr>
                     <tr>
-                        <td>Meeting Purpose</td>
+                        <td>Purpose of the meeting</td>
                         <td>{{ $bookingDetail['meeting_purpose'] }}</td>
                     </tr>
                     @if(!empty($bookingDetail['description']))
@@ -88,27 +82,21 @@
                     </tr>
                     @endif
                     <tr>
-                        <td>Meeting Status</td>
+                        <td>Request Status</td>
                         <td>{{ $bookingDetail['booking_status'] }}</td>
                     </tr>
                 </tbody>
             </table>
             <br>
-            <p>Regards,<br>{{ config('app.name') }}</p>
+            <p>Regards,<br> {{ config('app.name') }}</p>
         </div>
     @else
         <!-- User Email Content in Table Form -->
         <div class="email-section">
-            <h1>{{ $bookingDetail['change_status'] ? 'Your Booking Status Has Been Updated!' : 'Thank You for Your Booking!' }}</h1>
+            <h1>{{ $bookingDetail['change_status'] ? 'Your Legal Consultation Request Status Has Been Updated!' : 'Thank You for Your Request!' }}</h1>
             <p>Dear {{ $bookingDetail['client_name'] }},</p>
-            <p>{{ $bookingDetail['change_status'] ? 'Your booking status has been updated. Please see the details below:' : 'Thank you for booking a meeting with us. Please find the details of your booking below:' }}</p>
+            <p>{{ $bookingDetail['change_status'] ? 'The status of your legal advice request has been updated. Please see details below:' : 'Thank you for submitting a request for legal consultation from RAALC Law Firm. Our team will contact you shortly to confirm the meeting time.' }}</p>
             <table>
-                <thead>
-                    <tr>
-                        <th>Field</th>
-                        <th>Details</th>
-                    </tr>
-                </thead>
                 <tbody>
                     @if(!empty($bookingDetail['consultant_name']))
                     <tr>
@@ -123,11 +111,11 @@
                     </tr>
                     @endif
                     <tr>
-                        <td>Meeting Date</td>
+                        <td>Preferred Date</td>
                         <td>{{ $bookingDetail['meeting_date'] }}</td>
                     </tr>
                     <tr>
-                        <td>Time Slot</td>
+                        <td>Preferred Time Slot</td>
                         <td>{{ $bookingDetail['time_slot'] }}</td>
                     </tr>
                     <tr>
@@ -135,7 +123,7 @@
                         <td>{{ $bookingDetail['number_of_attendees'] }}</td>
                     </tr>
                     <tr>
-                        <td>Meeting Purpose</td>
+                        <td>Purpose of the meeting</td>
                         <td>{{ $bookingDetail['meeting_purpose'] }}</td>
                     </tr>
                     @if(!empty($bookingDetail['description']))
@@ -146,7 +134,7 @@
                     @endif
                     @if($bookingDetail['change_status'])
                     <tr>
-                        <td>Updated Status</td>
+                        <td>Request Status</td>
                         <td>{{ $bookingDetail['booking_status'] }}</td>
                     </tr>
                     @endif

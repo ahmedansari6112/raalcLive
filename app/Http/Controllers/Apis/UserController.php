@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Apis;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Apis\OtpController;
 use App\Models\AppContent;
+use App\Models\OTP;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -24,10 +27,13 @@ class UserController extends Controller
 {
     public function __construct() { 
         // List of routes where JWT authentication should not be applied
-        $excludedRoutes = [
-            'register',
-            'login',
-            'fetchSocialMediaLinks'
+   $excludedRoutes = [
+            'adminRegister',
+            'adminLogin',
+            'clientRegister',
+            'clientLogin',
+            'fetchSocialMediaLinks',
+            'serviceSlug'
         ];
     
         // Get current route name
@@ -54,8 +60,8 @@ class UserController extends Controller
         }
     } 
     
-    
-    public function register(Request $request)
+
+    public function adminRegister(Request $request)
     {
         // Validation rules
         $rules = [
@@ -89,6 +95,137 @@ class UserController extends Controller
             $user->save();
     
             // Assign the 'client' role to the user
+            $user->assignRole('legal_secretary');
+    
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'false',
+                'message' => 'Legal Secretary registration failed: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR); // HTTP 500
+        }
+    
+        // Generate JWT token
+        try {
+            $token = JWTAuth::fromUser($user);
+        } catch (JWTException $e) {
+            return response()->json([
+                'status' => 'false',
+                'message' => 'Could not create token: ' . $e->getMessage()
+            ], 400); // HTTP 500
+        }
+    
+        // Add custom claims to the token
+        $customClaims = ['role' => $user->getRoleNames()->first()]; // Assuming a single role
+    
+        // Create a new token with custom claims
+        $token = JWTAuth::claims($customClaims)->fromUser($user);
+    
+        return response()->json([
+            'status' => 'true',
+            'message' => 'registered successfully',
+            'data' => [
+                'id' => $user->id,
+                'user_role' =>  $user->getRoleNames()->first(),
+                'name' => $user->name,
+                'email' => $user->email,
+                'address' => "",
+                'phone' => "",
+                'profile_image' => "",
+                'api_token' => $token
+            ],
+        ], Response::HTTP_CREATED); // HTTP 201
+    }
+          
+    public function adminLogin(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+        
+        if (!$token = JWTAuth::attempt($credentials)) {
+            return response()->json(['status' => 'false','message' => 'Credentials do not match!'], 200);
+        }
+        
+         // Get the authenticated user
+        $user = Auth::user();
+
+        // Check the user's role
+        if ($user->getRoleNames()->first() == 'client') {
+            return response()->json(['status' => 'false', 'message' => 'Clients are not allowed to log in!'], 200);
+        }
+        
+        // Add custom claims to the token
+        $customClaims = ['role' => $user->getRoleNames()->first()]; // Assuming a single role
+
+        // Create a new token with custom claims
+        $token = JWTAuth::claims($customClaims)->fromUser($user);
+        $profile_image = $this->getImageUrl($user->profile_image);
+        
+        return response()->json([
+            'status' => 'true',
+            'message' => 'You have logged in successfully',
+            'data' => [
+                'id' => $user->id,
+                'user_role' =>  $user->getRoleNames()->first(),
+                'name' => $user->name,
+                'email' => $user->email,
+                'address' => $user->address ?? "",
+                'phone' => $user->phone ?? "",
+                'profile_image' => $profile_image,
+                'api_token' => $token
+            ],
+        ]);
+    }
+    
+    public function clientRegister(Request $request)
+    {
+        // Validation rules
+        $rules = [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed'
+        ];
+    
+        // Validate request data
+        $validator = Validator::make($request->all(), $rules);
+    
+        if ($validator->fails()) {
+            // Collect all error messages into a single string with line breaks
+            $errorMessages = implode("\n", $validator->errors()->all());
+            return response()->json([
+                'status' => 'false',
+                'message' => $errorMessages,
+            ], Response::HTTP_UNPROCESSABLE_ENTITY); // HTTP 422
+        }
+    
+        DB::beginTransaction();
+    
+        try {
+            $client_name = $request->name;
+            $client_email = $request->email;
+            
+            // Create the user
+            $user = new User();
+            $user->name  = $client_name;
+            $user->email = $client_email;
+            $user->password = Hash::make($request->password); // Use Hash::make for password hashing
+    
+            // Save the user
+            $user->save();
+            
+            if($user){
+                
+                // Send OTP using Laravel's dependency injection
+                $otpController = app(OtpController::class);
+                $otpResponse = $otpController->sendOtp(new Request(['email' => $client_email]));
+                
+                $otpMessage = "";
+                if($otpResponse->original['message']){
+                    $otpMessage = $otpResponse->original['message'];
+                }
+            }
+            
+            // Assign the 'client' role to the user
             $user->assignRole('client');
     
             DB::commit();
@@ -118,7 +255,7 @@ class UserController extends Controller
     
         return response()->json([
             'status' => 'true',
-            'message' => 'User registered successfully',
+            'message' => 'User registered successfully and '.$otpMessage,
             'data' => [
                 'id' => $user->id,
                 'user_role' =>  $user->getRoleNames()->first(),
@@ -132,18 +269,32 @@ class UserController extends Controller
         ], Response::HTTP_CREATED); // HTTP 201
     }
      
-    public function login(Request $request)
+    public function clientLogin(Request $request)
     {
         $credentials = $request->only('email', 'password');
         
-        
-       if (!$token = JWTAuth::attempt($credentials)) {
+        if (!$token = JWTAuth::attempt($credentials)) {
             return response()->json(['status' => 'false','message' => 'Credentials do not match!'], 200);
         }
         
-         // Get the authenticated user
+        $client_email = $request->email;
+        
+        // Get the authenticated user
         $user = Auth::user();
         
+        // Check if the user's role is 'client'
+        if ($user->getRoleNames()->first() !== 'client') {
+            return response()->json(['status' => 'false', 'message' => 'Only clients are allowed to log in!'], 200);
+        }
+        
+        $otpRecord = OTP::where('email', $client_email)
+                        ->where('is_used', true)
+                        ->first();
+    
+        if (!$otpRecord) {
+            return response()->json(['status' => 'false', 'message' => 'Email is not verified. Please verify your email first, then log in!'], 200);
+        }
+
         // Add custom claims to the token
         $customClaims = ['role' => $user->getRoleNames()->first()]; // Assuming a single role
 
@@ -165,8 +316,7 @@ class UserController extends Controller
                 'api_token' => $token
             ],
         ]);
-    }
-    
+    }    
     public function getNotificationStatus()
     {
         try {
@@ -201,6 +351,7 @@ class UserController extends Controller
             'message' => 'Profile fetched successfully',
             'data' => [
                 'id' => $this->user->id,
+		'user_role' =>  $this->user->getRoleNames()->first(),
                 'name' => $this->user->name,
                 'email' => $this->user->email,
                 'phone' => $this->user->phone,
@@ -669,4 +820,7 @@ class UserController extends Controller
 
         return null;
     }
+    
+    
+    
 }

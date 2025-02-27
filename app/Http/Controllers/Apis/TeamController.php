@@ -26,7 +26,8 @@ class TeamController extends Controller
         // List of routes where JWT authentication should not be applied
         $excludedRoutes = [
             'list',
-            'fetch'
+            'fetch',
+            'teamSlug'
         ];
     
         // Get current route name
@@ -117,6 +118,7 @@ class TeamController extends Controller
                 
                 return [
                     'id' => $id,
+                    'slug' => $team->slug,
                     'order_number' => $team->order_number,
                     'meta_tag' => $meta_tag,
                     'meta_description' => $meta_description,
@@ -196,7 +198,7 @@ class TeamController extends Controller
         try {
             // Insert into team table
             $team = new Team();
-            $lastData = Team::orderBy('created_at','DESC')->first();
+            $lastData = Team::orderBy('order_number','DESC')->first();
             
             if ($request->has('lawyer_email')) {
                 $team->lawyer_email = $request->input('lawyer_email');
@@ -216,15 +218,18 @@ class TeamController extends Controller
                 $team->qr_code_image = $imagePath;
             }
             
-            $team->order_number = (int)$lastData->order_number + 1;
+            $translationData = $request->input('team_translation', []);
             
+            $team->order_number = (int)$lastData->order_number + 1;
+            $member_name = $translationData['name'];
+            $team->slug = Str::slug($member_name);
             $team->save();
 
             // Insert into department_translations table
             $translation = new TeamTranslation();
             $translation->team_id = $team->id;
             $translation->lang = $lang;
-            $translation->fields_value = json_encode($request->input('team_translation'));
+            $translation->fields_value = json_encode($translationData);
             $translation->save();
 
             DB::commit(); // Commit transaction
@@ -236,16 +241,22 @@ class TeamController extends Controller
         }
     }
 
-    public function show($id, $lang)
+    public function show($slug, $lang)
     {
         try {
-            // Retrieve the team memeber
-            $team = Team::find($id);
+            // Fetch the content by slug
+            $team = Team::where('slug', $slug)->first();
     
             if (!$team) {
-                return response()->json(['status' => 'false', 'message' => 'Team member not found'], Response::HTTP_NOT_FOUND);
+                // Fetch the content by id
+                $team = Team::where('id', $slug)->first();
+                if (!$team) {
+                    return response()->json(['status' => 'false', 'message' => 'Team member not found'], Response::HTTP_NOT_FOUND);
+                }    
             }
             
+            
+            $id = $team->id;
             $lowyer_image = $qr_code_image= null;
             if(!empty($team->lowyer_image) && $team->lowyer_image != null){
                 $lowyer_image = $this->getImageUrl($team->lowyer_image);
@@ -383,12 +394,15 @@ class TeamController extends Controller
                 $team->qr_code_image = $imagePath;
             }
             
+            $translation = $request->input('team_translation', []);
+            $member_name = $translation['name'];
+            $team->slug = Str::slug($member_name);
             $team->save();
 
             // Update or create department translation
             $translation = TeamTranslation::updateOrCreate(
                 ['team_id' => $id, 'lang' => $lang],
-                ['fields_value' => json_encode($request->input('team_translation'))]
+                ['fields_value' => json_encode($translation)]
             );
 
             DB::commit(); // Commit transaction
@@ -408,7 +422,7 @@ class TeamController extends Controller
         try {
             $team = Team::find($id);
             if (!$team) {
-                return response()->json(['status' => 'false', 'message' => 'Department not found'], Response::HTTP_NOT_FOUND);
+                return response()->json(['status' => 'false', 'message' => 'Team not found'], Response::HTTP_NOT_FOUND);
             }
 
             // Delete the department image if it exists
@@ -417,7 +431,7 @@ class TeamController extends Controller
             }
 
             // Delete associated translations
-            // TeamTranslation::where('team_id', $id)->delete();
+            TeamTranslation::where('team_id', $id)->delete();
 
             // Delete the department record
             $team->delete();
@@ -531,6 +545,7 @@ class TeamController extends Controller
 
                 return [
                     'id' => $id,
+                    'slug' => $team->slug,
                     'order_number' => $team->order_number,
                     'number_of_cases' => (int) $team->number_of_cases ?? 0,
                     'lowyer_image' => $lowyer_image,
@@ -638,6 +653,7 @@ class TeamController extends Controller
 
                 return [
                     'id' => $id,
+                    'slug' => $team->slug,
                     'order_number' => $team->order_number,
                     'meta_tag' => $meta_tag,
                     'meta_description' => $meta_description,
@@ -671,13 +687,13 @@ class TeamController extends Controller
     
     
     // combine content
-    public function getTeamsCombine($lang)
+    public function getTeamsCombine($lang, $per_page = 6)
     {
         try {
             // Retrieve all teams
-            $teams = Team::orderBy('order_number', 'ASC')->get();
-
-            // return $teams;
+            $teamsQuery = Team::orderBy('order_number', 'ASC');
+            $perPage = request()->input('per_page', $per_page);
+            $teams = $teamsQuery->paginate($perPage);
 
             // Check if any teams are found
             if ($teams->isEmpty()) {
@@ -728,6 +744,7 @@ class TeamController extends Controller
 
                 return [
                     'id' => $id,
+                    'slug' => $team->slug,
                     'order_number' => $team->order_number,
                     'meta_tag' => $meta_tag,
                     'meta_description' => $meta_description,
@@ -764,5 +781,88 @@ class TeamController extends Controller
         $image_path = Storage::url($image_path);
         $image_url = asset($image_path);
         return $image_url;
+    }
+    
+    
+    public function teamSlug(Request $request)
+    {   
+        $array = [
+            3 => "Ehab Mohamed",
+            4 => "Abdelaziz Alkhamiri",
+            6 => "Mohamed Jasim Almaazmi",
+            81 => "Mouza Alnuaimi",
+            19 => "Lina Khudairi",
+            43 => "Hossam Hassanein",
+            21 => "Atif Bashir",
+            24 => "Haitham Badr",
+            55 => "Israa Abdulla",
+            20 => "Kate Chen",
+            95 => "Zaur Kurbanov",
+            87 => "Nabil Hamed",
+            58 => "Mohamed El-Beltagy",
+            25 => "Heba Mohamed",
+            52 => "Fadi Samer",
+            62 => "Rajja Kaleem",
+            26 => "Amir Fahim",
+            50 => "Asna Patel",
+            42 => "Erum Sheikh",
+            48 => "Aliaksandr Yermalayeu",
+            59 => "Mohammed Mamedov",
+            41 => "Adnan Karim",
+            49 => "Anda Musaraj",
+            60 => "Nimi Sam",
+            80 => "Ahmed Mohamed",
+            51 => "Devi Nair",
+            36 => "Mohamed Selim",
+            22 => "Ibrahim Allam",
+            76 => "Mohamed Gamaleldin",
+            69 => "Mohamed Lezawy",
+            32 => "Mahmoud Mahmoud",
+            57 => "Mohamed Tantawy",
+            23 => "Islam Badiny",
+            74 => "Mahmoud Ali",
+            73 => "Mahmoud Mady",
+            29 => "Mahmoud Hussein",
+            72 => "Hazem Khader",
+            75 => "Marwa Elsayed",
+            39 => "Ahmed Badr",
+            40 => "Assem Basha",
+            70 => "Fathy Badr",
+            71 => "Islam Ibrahim",
+            35 => "Ahmed Selim",
+            38 => "Ali Mohammed",
+            37 => "Nour Boukerker",
+            63 => "Rey May Tribo",
+            67 => "Nadine Karam",
+            79 => "Mohammedalfatih Eldirdiri",
+            61 => "Rahma Saed",
+            82 => "Salma Anbar",
+            88 => "Razan Al-Hussien",
+            78 => "Sabira Faiyazuddin",
+            89 => "Sahana V.K",
+            34 => "Saliha Faiyaz",
+            68 => "Sama Ibrahim",
+            47 => "Jalal Nader",
+            91 => "Jaber Suliman",
+        ];
+
+
+        
+        foreach ($array as $id => $teamName) {
+                // Find the service by ID
+                $team = Team::find($id);
+            
+                if ($team) {
+                    // Generate a slug from the service name
+                    
+                    $slug = Str::slug($teamName);
+                   
+                    // Update the slug field
+                    $team->slug = $slug;
+                    $team->save();
+            
+                } 
+            }
+        return response()->json(['status' => 'true','message' => 'Team slug updated successfully'],200);
     }
 }

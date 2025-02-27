@@ -389,6 +389,7 @@ class ServiceCategoryController extends Controller
                     $dataArray[$title]['íd'] = $id;
                     $dataArray[$title]['data'][] = [
                         'id' => $service->id,
+                        'slug' => $service->slug,
                         'service_title' => $translatedData['sec_one_heading_one'] ?? $title,
                     ];
                     
@@ -396,6 +397,7 @@ class ServiceCategoryController extends Controller
                     $title = $translatedData['sec_one_heading_one'];
                     $dataArray[$title] = [
                         'id' => $service->id,
+                        'slug' => $service->slug,
                         'data' => []
                     ];
                 }

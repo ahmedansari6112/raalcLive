@@ -40,8 +40,11 @@ Route::post('/send-notification', [NotificationController::class, 'sendNotificat
 |
 */
 // Client register route
-Route::post('register', [UserController::class, 'register'])->name('register');
-Route::post('login', [UserController::class, 'login'])->name('login');
+Route::post('register', [UserController::class, 'clientRegister'])->name('clientRegister');
+Route::post('login', [UserController::class, 'clientLogin'])->name('clientLogin');
+
+Route::post('serviceSlug', [ServicesController::class, 'serviceSlug'])->name('serviceSlug');
+Route::post('teamSlug', [TeamController::class, 'teamSlug'])->name('teamSlug');
 
 // Send OTP to user
 Route::post('sendOtp', [OtpController::class, 'sendOtp']);
@@ -52,9 +55,9 @@ Route::post('/updatePassword', [OtpController::class, 'updatePassword']);
 
 // For Admin
 Route::group(['prefix' => 'admin'], function () {
-    Route::post('login', [UserController::class, 'login'])->name('login');
+    Route::post('register', [UserController::class, 'adminRegister'])->name('adminRegister');
+    Route::post('login', [UserController::class, 'adminLogin'])->name('adminLogin');
 });
-
 
 // Booking Apis
 Route::group(['prefix' => 'booking', 'middleware' => 'validateLang'], function() {    
@@ -107,7 +110,7 @@ Route::group(['prefix' => 'departments', 'middleware' => 'validateLang'], functi
 Route::group(['prefix' => 'services', 'middleware' => 'validateLang'], function() {
     Route::get('/{lang?}/{per_page_count?}', [ServicesController::class, 'indexServices'])->name('list');
     Route::get('/singleDetail/{id}/{lang?}', [ServicesController::class, 'showService'])->name('fetch');
-    Route::get('/fetchPageContent/{id}/{lang?}', [ServicesController::class, 'fetchPageContent'])->name('fetchPageContent');
+    Route::get('/fetchPageContent/{slug}/{lang?}', [ServicesController::class, 'fetchPageContent'])->name('fetchPageContent');
 });
 
 // social links get apis 

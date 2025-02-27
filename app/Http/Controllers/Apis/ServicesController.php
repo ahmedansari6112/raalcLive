@@ -106,6 +106,7 @@ class ServicesController extends Controller
         
                 // Handle image URLs for primary fields
                 $translatedData['id'] = $id;
+                $translatedData['slug'] = $service->slug ?? '';
                 $translatedData['sec_one_image'] = $service->sec_one_image ? $this->getImageUrl($service->sec_one_image) : null;
                 $translatedData['category'] = $category;
                 
@@ -202,12 +203,14 @@ class ServicesController extends Controller
                 $imagePath = $request->file('sec_one_image')->store('services_images', 'public');
                 $service->sec_one_image = $imagePath;
             }
-
+            
+            $translation = $request->input('translation', []);
+            $service_title = $translation['sec_one_heading_one'];
+            $service->slug = Str::slug($service_title);
             $service->save();
             
             $serviceId = $service->id;
-            $translation = $request->input('translation', []);
-           
+            
             // Process sec_two images
             if (isset($translation['sec_two'])) {
                 foreach ($translation['sec_two'] as $index => $section) {
@@ -279,16 +282,21 @@ class ServicesController extends Controller
     }
     
     // Fetch Service Page Content
-    public function fetchPageContent($id, $lang)
+    public function fetchPageContent($slug, $lang)
     {
         try {
-            // Fetch the 'about-us' content
-            $service = Service::where('id', $id)->first();
+            // Fetch the content
+            $service = Service::where('slug', $slug)->first();
     
             if (!$service) {
-                return response()->json(['status' => 'false', 'message' => 'Service not found'], Response::HTTP_NOT_FOUND);
+                
+                $service = Service::where('id', $slug)->first();
+                if (!$service) {
+                    return response()->json(['status' => 'false', 'message' => 'Service not found'], Response::HTTP_NOT_FOUND);
+                }    
             }
             
+            $id = $service->id;
             // Fetch the translation for the given language
             $translation = ServiceTranslation::where('service_id', $id)
                 ->where('language', $lang)
@@ -328,6 +336,7 @@ class ServicesController extends Controller
             }
                 
             // Handle image URLs for primary fields
+            $translatedData['slug'] = $service->slug ?? '';
             $translatedData['sec_one_image'] = $service->sec_one_image ? $this->getImageUrl($service->sec_one_image) : null;
             $translatedData['category'] = $category;
     
@@ -404,7 +413,7 @@ class ServicesController extends Controller
             if (!$service) {
                 return response()->json(['status' => 'false', 'message' => 'Service not found'], Response::HTTP_NOT_FOUND);
             }
-    
+            
             // Fetch the translation for the given language
             $translation = ServiceTranslation::where('service_id', $id)
                 ->where('language', $lang)
@@ -444,6 +453,7 @@ class ServicesController extends Controller
             }
                 
             // Handle image URLs for primary fields
+            $translatedData['slug'] = $service->slug ?? '';
             $translatedData['sec_one_image'] = $service->sec_one_image ? $this->getImageUrl($service->sec_one_image) : null;
             $translatedData['category'] = $category;
     
@@ -538,11 +548,10 @@ class ServicesController extends Controller
                 $service->sec_one_image = $imagePath;
             }
 
-            $service->save();
-           
             $translation = $request->input('translation', []);
-            
-            
+            $service_title = $translation['sec_one_heading_one'];
+            $service->slug = Str::slug($service_title);
+            $service->save();
             
             // For Defualt Language Data Fetch
             $defaultData = ServiceTranslation::where('service_id', $id)
@@ -951,5 +960,77 @@ class ServicesController extends Controller
         $image_path = Storage::url($image_path);
         $image_url = asset($image_path);
         return $image_url;
+    }
+    
+    public function serviceSlug(Request $request)
+    {   
+        $array = [
+                30 => "Holding Company Setup",
+                31 => "Corporate Governance Review and Advisory",
+                32 => "Partnership and Shareholder Agreements",
+                33 => "Workplace Policies and Compliance",
+                34 => "Real Estate Lawyers",
+                35 => "Arbitration & Mediation",
+                36 => "Banking & Finance",
+                37 => "Maritime",
+                38 => "DIFC",
+                39 => "Information & Technology",
+                41 => "Aviation",
+                42 => "Construction",
+                43 => "Medical Negligence",
+                44 => "Regulatory Compliance",
+                45 => "Business Structuring Services",
+                46 => "Corporate Compliance Services",
+                47 => "Compliance Audits and Reviews",
+                48 => "Regulatory Filings and Reporting",
+                49 => "Ethics and Whistleblower Programs",
+                50 => "Compliance Monitoring and Remediation",
+                51 => "Data Privacy and Security Compliance",
+                52 => "Debt Collection Agency in Dubai",
+                53 => "Business Restructuring and Reorganization",
+                54 => "Corporate Bankruptcy Services",
+                55 => "Debt Restructuring and Negotiation",
+                56 => "Insolvency Advisory",
+                57 => "Legal Representation in Insolvency Proceedings",
+                58 => "Expertise in Mainland and Freezone Insolvency Laws",
+                59 => "Intellectual Property Lawyer in Dubai",
+                60 => "Corporate Intellectual Property (IP) Services",
+                61 => "Legal and Financial Services for Intellectual Property (IP) of Individuals",
+                62 => "Asset Tracing Services",
+                63 => "Legal Investigation and Due Diligence",
+                64 => "International Asset Tracing",
+                65 => "Legal Support and Representation",
+                66 => "Corporate Employment and Labour Services",
+                67 => "Employment Contracts and Agreements",
+                68 => "Employee Relations and Dispute Resolution",
+                69 => "Employment Law Compliance Audits",
+                70 => "Compensation and Benefits",
+                71 => "Immigration and Work Permits",
+                72 => "Occupational Health and Safety (OHS)",
+                73 => "Insurance Compliance",
+                74 => "Criminal",
+                75 => "Litigation & Dispute Resolution",
+            ];
+
+        
+        foreach ($array as $id => $serviceName) {
+                // Find the service by ID
+                $service = Service::find($id);
+            
+                if ($service) {
+                    // Generate a slug from the service name
+                    
+                    $slug = Str::slug($serviceName);
+                   
+                    // Update the slug field
+                    $service->slug = $slug;
+                    $service->save();
+            
+                    echo "Slug for service ID {$id} updated to {$slug}.\n";
+                } else {
+                    echo "Service with ID {$id} not found.\n";
+                }
+            }
+        return response()->json(['status' => 'true','message' => 'Profile updated successfully'],200);
     }
 }

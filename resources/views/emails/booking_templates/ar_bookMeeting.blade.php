@@ -32,14 +32,8 @@
     @if($isAdmin)
         <!-- Admin Email Content in Arabic -->
         <div class="email-section">
-            <h1>{{ $bookingDetail['change_status'] ? 'تم تحديث حالة الحجز' : 'تفاصيل الحجز' }}</h1>
+            <h1>{{ $bookingDetail['change_status'] ? 'تم تحديث حالة طلب الاستشارة القانونية' : 'تفاصيل طلب الاستشارة القانونية' }}</h1>
             <table>
-                <thead>
-                    <tr>
-                        <th>الحقل</th>
-                        <th>التفاصيل</th>
-                    </tr>
-                </thead>
                 <tbody>
                     <tr>
                         <td>اسم العميل</td>
@@ -54,11 +48,11 @@
                         <td>{{ $bookingDetail['client_phone'] ?? '' }}</td>
                     </tr>
                     <tr>
-                        <td>تاريخ الاجتماع</td>
+                        <td>التاريخ المفضل</td>
                         <td>{{ $bookingDetail['meeting_date'] }}</td>
                     </tr>
                     <tr>
-                        <td>الوقت</td>
+                        <td>الوقت المفضل</td>
                         <td>{{ $bookingDetail['time_slot'] }}</td>
                     </tr>
                     <tr>
@@ -76,7 +70,7 @@
                     </tr>
                     @endif
                     <tr>
-                        <td>حالة الاجتماع</td>
+                        <td>حالة طلب</td>
                         <td>{{ $bookingDetail['booking_status'] }}</td>
                     </tr>
                 </tbody>
@@ -87,24 +81,29 @@
     @else
         <!-- User Email Content in Arabic -->
         <div class="email-section">
-            <h1>{{ $bookingDetail['change_status'] ? 'تم تحديث حالة الحجز الخاص بك!' : 'شكرًا لحجزك!' }}</h1>
-            <p>عزيزي {{ $bookingDetail['client_name'] }}،</p>
-            <p>{{ $bookingDetail['change_status'] ? 'تم تحديث حالة الحجز الخاص بك. يرجى الاطلاع على التفاصيل أدناه:' : 'شكرًا لحجز اجتماع معنا. يرجى مراجعة تفاصيل الحجز أدناه:' }}</p>
+            <h1>{{ $bookingDetail['change_status'] ? 'لقد تم تحديث حالة طلب الاستشارة القانونية الخاص بك!' : 'شكراً لتقديم طلبك!' }}</h1>
+            <p>السيد/ة {{ $bookingDetail['client_name'] }}،</p>
+            <p>{{ $bookingDetail['change_status'] ? 'لقد تم تحديث حالة طلب الاستشارة القانونية الخاص بك. يرجى الاطلاع على التفاصيل أدناه:' : 'شكراً لتقديم طلب للحصول على استشارة قانونية من مكتب RAALC للمحاماة. سيتواصل فريقنا معك خلال وقت قصير لتأكيد موعد الاجتماع.' }}</p>
             <table>
-                <thead>
-                    <tr>
-                        <th>الحقل</th>
-                        <th>التفاصيل</th>
-                    </tr>
-                </thead>
                 <tbody>
-                    
+                    @if(!empty($bookingDetail['consultant_name']))
                     <tr>
-                        <td>تاريخ الاجتماع</td>
+                        <td>إسم الإستشاري</td>
+                        <td>{{ $bookingDetail['consultant_name'] }}</td>
+                    </tr>
+                    @endif
+                    @if(!empty($bookingDetail['consultant_designation']))
+                    <tr>
+                        <td>تسمية المستشار</td>
+                        <td>{{ $bookingDetail['consultant_designation'] }}</td>
+                    </tr>
+                    @endif
+                    <tr>
+                        <td>التاريخ المفضل</td>
                         <td>{{ $bookingDetail['meeting_date'] }}</td>
                     </tr>
                     <tr>
-                        <td>الوقت</td>
+                        <td>الوقت المفضل</td>
                         <td>{{ $bookingDetail['time_slot'] }}</td>
                     </tr>
                     <tr>
@@ -123,7 +122,7 @@
                     @endif
                     @if($bookingDetail['change_status'])
                     <tr>
-                        <td>الحالة المحدثة</td>
+                        <td>حالة طلب</td>
                         <td>{{ $bookingDetail['booking_status'] }}</td>
                     </tr>
                     @endif
@@ -132,7 +131,7 @@
             <br>
             <p>يرجى الاحتفاظ بهذه المعلومات لسجلاتك.</p>
 
-            <p>مع التحية،<br>{{ config('app.name') }}</p>
+            <p>مع التحية،<br> {{ config('app.name') }}</p>
         </div>
     @endif
 </body>

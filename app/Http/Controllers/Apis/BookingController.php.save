@@ -259,7 +259,7 @@ class BookingController extends Controller
                                 return $query->whereRaw("DATE_FORMAT(meeting_date, '%Y-%m-%d') BETWEEN ? AND ?", [$from_month, $to_month]);
                             })
                             ->when(!empty($client_id), function ($query) use ($client_id) {
-                                return $query->where('client_id', $client_id);
+                $client_phone = $list->client_phone;                return $query->where('client_id', $client_id);
                             })
                             ->where('language', $lang)
                             ->orderBy('updated_at','DESC')
@@ -276,7 +276,7 @@ class BookingController extends Controller
                 $client_id = (int)  $list->client_id;
                 $client_name = $list->client_name;
                 $client_email = $list->client_email;
-		$client_phone = $list->client_phone;
+		
                 $number_of_attendees = $list->number_of_attendees;
                 $meeting_date = $list->meeting_date;
                 $time_slot_id = $list->time_slot;
@@ -343,7 +343,6 @@ class BookingController extends Controller
                         'client_id' => $client_id,
                         'client_name' => $client_name,
                         'client_email' => $client_email,
-			'client_phone' => $client_phone,
                         'consultant_id' => (int) $team_id,
                         'consultant_name' => $consultant_name,
                         'consultant_email' => $consultant_email,
@@ -615,7 +614,6 @@ class BookingController extends Controller
                 $client_id = (int) $list->client_id;
                 $client_name = $list->client_name;
                 $client_email = $list->client_email;
-		$client_phone = $list->client_phone;
                 $number_of_attendees = $list->number_of_attendees;
                 $meeting_date = $list->meeting_date;
                 $time_slot_id = $list->time_slot;
@@ -681,7 +679,6 @@ class BookingController extends Controller
                         'client_id' => $client_id,
                         'client_name' => $client_name,
                         'client_email' => $client_email,
-			'client_phone' => $client_phone,
                         'consultant_id' => (int) $team_id,
                         'consultant_name' => $consultant_name,
                         'consultant_email' =>$consultant_email,
@@ -735,7 +732,6 @@ class BookingController extends Controller
                 $client_id = (int)  $list->client_id;
                 $client_name = $list->client_name;
                 $client_email = $list->client_email;
-		$client_phone = $list->client_phone;
                 $number_of_attendees = $list->number_of_attendees;
                 $meeting_date = $list->meeting_date;
                 $time_slot_id = $list->time_slot;
@@ -802,7 +798,6 @@ class BookingController extends Controller
                     'client_id' => $client_id,
                     'client_name' => $client_name,
                     'client_email' => $client_email,
-		    'client_phone' => $client_phone,
                     'consultant_name' => $consultant_name,
                     'consultant_email' => $consultant_email,
                     'consultant_designation' => $consultant_designation,

@@ -426,17 +426,38 @@ class WebContentController extends Controller
                 return response()->json(['status' => 'false', 'message' => 'Content not found'], Response::HTTP_NOT_FOUND);
             }
 
-            $webTranslations = WebContainTranslation::where('web_content_id', $webContent->id)
+	    $webTranslations = WebContainTranslation::where('web_content_id', $webContent->id)
                 ->where('language', $lang)
                 ->first();
 
-            if(!empty($webTranslations)){
+            if (!empty($webTranslations)) {
+                // Decode the JSON translation data
                 $tranlateArray = json_decode($webTranslations->translated_value, true);
+            }else{
+                // For Defualt Language Data Fetch
+                $defaultData = WebContainTranslation::where('web_content_id', $webContent->id)
+                    ->where('language', 'en')
+                    ->first();
+                    
+                if (!empty($defaultData)) {
+                    // Decode the JSON translation data
+                    $tranlateArray = json_decode($defaultData->translated_value, true);
+                }    
             }
 
             $tranlateArray['header_image'] = $webContent->header_image ? $this->getImageUrl($webContent->header_image) : null;
             $tranlateArray['sec_two_image'] = $webContent->sec_two_image ? $this->getImageUrl($webContent->sec_two_image) : null;
             $tranlateArray['sec_four_image'] = $webContent->sec_four_image ? $this->getImageUrl($webContent->sec_four_image) : null;
+
+            // Process client_section images
+            if (isset($tranlateArray['client_section'])) {
+                foreach ($tranlateArray['client_section'] as $index => $section) {
+                    $tranlateArray['client_section'][$index]['old_image'] = $section['image'] ? $section['image'] : null;
+                    $tranlateArray['client_section'][$index]['image'] = $section['image'] ? $this->getImageUrl($section['image']) : null;
+                }
+            }else{
+                $tranlateArray['client_section'] = [];
+            }
 
             return response()->json([
                 'status' => 'true',
@@ -511,13 +532,37 @@ class WebContentController extends Controller
                 'sec_four_fact_two_title'=>$request->sec_four_fact_two_title,
                 'sec_four_fact_three' => $request->sec_four_fact_three,
                 'sec_four_fact_three_title'=>$request->sec_four_fact_three_title,
-            ];
+		'client_section_title' => $request->client_section_title,            
+];
+$webContentId = $webContent->id;
+            $translation = $request->input('translation', []);
+            
+            // Process client_section images
+            if (isset($translation['client_section'])) {
+                foreach ($translation['client_section'] as $index => $section) {
+                    $imageKey = "translation.client_section.$index.image";
+                    if ($request->hasFile($imageKey)) {
+                        // Delete old image if it exists
+                        $oldImagePath = $this->getOldImagePath($lang, $webContentId, $index, 'client_section');
+                        if ($oldImagePath != null) {
+                            Storage::disk('public')->delete($oldImagePath);
+                        }
+                        // Upload new image
+                        $imageFile = $request->file($imageKey);
+                        $imagePath = $imageFile->store('web_content_images', 'public');
+                        $translation['client_section'][$index]['image'] = $imagePath;
+                    } else {
+                        $oldImagePath = $this->getOldImagePath($lang, $webContentId, $index, 'client_section');
+                        $translation['client_section'][$index]['image'] = $oldImagePath;
+                    }
+                }
+            }
 
-            // return $originalText;
-
+            $array_merge = array_merge($originalText,$translation);
+          
             WebContainTranslation::updateOrCreate(
                 ['language' => $lang, 'web_content_id' => $webContent->id],
-                ['translated_value' => json_encode($originalText, JSON_UNESCAPED_UNICODE)]
+                ['translated_value' => json_encode($array_merge, JSON_UNESCAPED_UNICODE)]
             );
 
             return response()->json(['status' => 'true', 'message' => 'Web content saved or updated successfully'], 200);
@@ -901,6 +946,16 @@ class WebContentController extends Controller
             $translateArray['header_image'] = $home->header_image ? $this->getImageUrl($home->header_image) : null;
             $translateArray['sec_two_image'] =  $home->sec_two_image ? $this->getImageUrl($home->sec_two_image) : null;
             $translateArray['sec_four_image'] =  $home->sec_four_image ? $this->getImageUrl($home->sec_four_image) : null;
+
+            // Process client_section images
+            if (isset($translateArray['client_section'])) {
+                foreach ($translateArray['client_section'] as $index => $section) {
+                    $translateArray['client_section'][$index]['old_image'] = $section['image'] ? $section['image'] : null;
+                    $translateArray['client_section'][$index]['image'] = $section['image'] ? $this->getImageUrl($section['image']) : null;
+                }
+            }else{
+                $translateArray['client_section'] = [];
+            }
 
             $teamController = new TeamController();
             $teams =  $teamController->index($lang, 6);

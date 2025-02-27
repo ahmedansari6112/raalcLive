@@ -242,21 +242,21 @@ class NewsController extends Controller
     }
 
     /* news tab data insertion part POST/{lang} */
-    public function storeNews(NewsRequest $request, $lang)
+    public function storeNews(Request $request, $lang)
     {
         try {
 
-            $validator = Validator::make($request->all(), $request->rules());
-            $imgPaths = [];
+            // $validator = Validator::make($request->all(), $request->rules());
+            // $imgPaths = [];
             $news = new News();
 
-            if($validator->fails()){
-                return response()->json([
-                    'status' => 403,
-                    'message' => 'Validation failed',
-                    'errors' => $validator->errors()
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
-            }else{
+            // if($validator->fails()){
+                // return response()->json([
+            //         'status' => 403,
+            //         'message' => 'Validation failed',
+            //         'errors' => $validator->errors()
+            //     ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            // }else{
 
                 if($request->hasFile('images')){
                     if ($images = $request->file("images")) {
@@ -299,7 +299,7 @@ class NewsController extends Controller
 
                 return response()->json(['status' => 'true', 'message' => 'News created successfully'], 200);
 
-            }
+            // }
 
         } catch (\Exception $ex) {
             return response()->json([
